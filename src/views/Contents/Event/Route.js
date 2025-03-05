@@ -13,8 +13,8 @@ export const route =
             isAuth
         ],
         meta: {
-            title: 'Menu',
-            breadcrumb: 'Menu',
+            title: 'Event',
+            breadcrumb: 'Event',
         }
     },
     { 

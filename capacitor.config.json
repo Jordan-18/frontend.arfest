@@ -1,8 +1,0 @@
-{
-  "appId": "com.example.arfest",
-  "appName": "arfest",
-  "webDir": "dist",
-  "server": {
-    "androidScheme": "https"
-  }
-}

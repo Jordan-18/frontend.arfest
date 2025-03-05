@@ -11,10 +11,11 @@
                     <div class="card card-xl-stretch mb-xl-8">
                         <div class="card-header border-0 pt-5">
                             <h3 class="card-title align-items-start flex-column">
-                                <span class="card-label fw-bold fs-3 mb-1">event</span>
-                                <span class="text-muted fw-semibold fs-7">event &raquo;</span>
+                                <span class="card-label fw-bold fs-3 mb-1">Event</span>
+                                <span class="text-muted fw-semibold fs-7">Event &raquo;</span>
                             </h3>
                             <div class="card-toolbar">
+
                                 <template v-if="accessStore.create == 1">
                                     <v-btn class="success" variant="tonal" color="success" 
                                         @click="() => {
@@ -34,6 +35,22 @@
                                         Create
                                     </v-btn>
                                 </template>
+
+                                <v-select
+                                    label="Status"
+                                    variant="outlined"
+                                    clearable
+                                    multiple
+                                    chips
+                                    :items="['Pending', 'Approved','Rejected']"
+                                    v-model="eventStatus"
+                                    @blur="() => {
+                                        const pagination = this.$refs.table_event.$el.parentElement.querySelector('.v-pagination__list');
+                                        pagination.click()
+                                        
+                                    }"
+                                >
+                                </v-select>
                             </div>
                         </div>
                         <div class="card-body py-3">
@@ -41,10 +58,11 @@
                             <Datatable
                                 title = 'event'
                                 modules = 'event'
+                                :query="'&query='+eventStatus"
                                 :headers = headers
+                                ref="table_event"
                             >
                                 <template #default="{data}">
-
                                     <div class="row">
 
                                         <template v-if="accessStore.delete == 1">
@@ -68,6 +86,23 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </v-btn>
                                         </template>
+
+                                        <template v-if="accessStore.read == 1">
+                                            <v-btn 
+                                                variant="tonal"
+                                                :color="getColorStatus(data.raw.event_status)"
+                                                :data-bs-toggle="data.raw.event_status == `Pending`? `modal` : ''"
+                                                :data-bs-target="data.raw.event_status == `Pending`? `#ApprovalModal` : ''"
+                                            >
+                                                <i 
+                                                    class="bi bi-check-all"
+                                                    width="100"
+                                                    height="100"
+                                                ></i>
+                                                {{ data.raw.event_status }}
+                                            </v-btn>
+                                        </template>
+
 
                                     </div>
                                 </template>
@@ -229,6 +264,14 @@
         </div>
     </div>
 
+    <!-- Form Approval -->
+    <Modal 
+        title="Form Approval Event" 
+        id="ApprovalModal"
+        :backdrop=true
+    >
+
+    </Modal>
 </template>
 
 <script>
@@ -238,12 +281,11 @@
                 isLoading: false,
                 accessStore: this.$store.modules.Access.getters.getData,
                 headers: [
-                    { key: "event_name", title: "Event Name" },
-                    { key: "event_date_actual", title: "Event Date" },
-                    { key: "event_created_by.username", title: "Created By" },
-                    { key: "event_updated_by.username", title: "Updated By" },
-                    { key: "event_status", title: "Status" },
-                    { key: "actions", title: "Actions", sortable: false },
+                    { key: "event_name", title: "Event Name" , sortable: true},
+                    { key: "event_date_actual", title: "Event Date" , sortable: true},
+                    { key: "event_created_by.username", title: "Created By" , sortable: true},
+                    { key: "event_updated_by.username", title: "Updated By" , sortable: true},
+                    { key: "actions", title: "Actions", sortable: true },
                 ],
                 toogle: false,
                 event: null,
@@ -256,6 +298,7 @@
                 textSubmit:'',
                 fileData: null,
                 minDate: new Date(),
+                eventStatus: null,
             };
         },
         computed: {
@@ -482,6 +525,15 @@
                     return 'pdf';
                 }else{
                     return 'unknown';
+                }
+            },
+            getColorStatus(status){
+                if(status == 'Pending'){
+                    return 'warning'
+                }else if(status == 'Approved'){
+                    return 'success'
+                }else{
+                    return 'danger'
                 }
             },
         },

@@ -1,10 +1,4 @@
-// utils 
-import {onAccess} from '@/utils/Access';
-import {isAuth} from '@/utils/isAuth';
-
 import * as Dashboard from '@/views/Contents/Dashboard/Route.js'
-// import Publisher from '@/views/Contents/Publisher/Table.vue'
-// import User from '@/views/Contents/User/Table.vue'
 import * as Event from '@/views/Contents/Event/Route.js'
 import * as Point from '@/views/Contents/Point/Route.js'
 import * as Menu from '@/views/Contents/Menu/Route.js'

@@ -51,12 +51,14 @@ async function main(){
 
   // store
   app.config.globalProperties.$store = store
-
+  // Cookies.remove('loggedIn');
+  // Cookies.remove('loginData');
   router.beforeEach((to, from, next) => {      
     if(Cookies.get('loggedIn')){
       const Auth = Helper.decrypData(Cookies.get('loginData'))
       app.config.globalProperties.$dataAuth = Helper.decrypData(Cookies.get('loginData'))
       api.defaults.headers.common['Authorization'] = `${Auth.token_type} ${Auth.token}`;
+      console.log(`${Auth.token}`)
     }
 
     if((from.path === '/login' || from.path === 'register') && to.path === '/'){

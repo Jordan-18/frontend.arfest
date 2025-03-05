@@ -16,6 +16,7 @@
         :search="search"
         :items-per-page="itemsPerPage"
         :loading="isLoading"
+        @update:options="loadItems"
     >
 
         <template v-slot:bottom>
@@ -68,7 +69,19 @@
         currentPage: 1,
         itemsPerPage: 10,
         isLoading: true,
+        options: {
+            sortBy: [], // Informasi sorting (kolom dan arah) akan disimpan di sini
+        },
       }
+    },
+    computed: {
+        sortBy() {
+            if (this.options.sortBy.length === 0) {
+                return '';
+            }
+            const sort = this.options.sortBy[0];
+            return `&sortBy=${sort.value}&sortDesc=${sort.desc ? 'true' : 'false'}`;
+        },
     },
     mounted() {
         this.index()
@@ -90,9 +103,11 @@
                 if(this.itemsPerPage != 10 && this.itemsPerPage > 0){
                     url = url+'&limit='+this.itemsPerPage
                 }
-                if(this.$props.query != "" && this.$props.query != undefined){
+                if(this.$props.query != "" && this.$props.query != undefined && this.$props.query != '&query=null'){
                     url = url+this.$props.query
                 }
+
+                url = `${url}${this.sortBy}`;
                     
                 const response = await this.$api.get(url,{
                     headers: {

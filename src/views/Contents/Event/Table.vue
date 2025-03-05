@@ -9,39 +9,39 @@
                   
                   <div class="row" :loading="isLoading">
                       <div class="col-md-3" v-for="(v, i) in events" :key="i">
-                          <div class="card mt-3">
-                              <div class="image-container">
-                                <img :src="v.event_img" alt="Your Image">
-                              </div>
-                              <div class="card-body">
-                                  <h5 class="card-title">
-                                    {{v.event_name}}
-                                  </h5>
-                                  <h6 class="card-subtitle mb-2 text-muted">
-                                    Event date : 
-                                      {{ 
-                                        new Date((v.event_date_actual))
-                                          .toLocaleDateString('en-US', { 
-                                            day: '2-digit', 
-                                            month: 'long', 
-                                            year: 'numeric' 
-                                          }) 
-                                      }}
-                                  </h6>
-                                  <strong>Deskripsi :</strong>
-                                  <p>{{ (v.event_description).slice(0, 150) + '....' }}</p>
-                                  <br>
-                                  <div class="row">
-                                      <v-btn 
-                                          justify='end' 
-                                          color="blue"
-                                          fab dark small
-                                          variant="tonal"
-                                          @click="show(v)"
-                                      >Detail &raquo;</v-btn>
-                                  </div>
-                              </div>
-                          </div>
+                        <div class="card mt-3">
+                            <div class="image-container">
+                              <img :src="v.event_img" alt="Your Image">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                  {{v.event_name}}
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                  Event date : 
+                                    {{ 
+                                      new Date((v.event_date_actual))
+                                        .toLocaleDateString('en-US', { 
+                                          day: '2-digit', 
+                                          month: 'long', 
+                                          year: 'numeric' 
+                                        }) 
+                                    }}
+                                </h6>
+                                <strong>Deskripsi :</strong>
+                                <p>{{ (v.event_description).slice(0, 150) + '....' }}</p>
+                                <br>
+                                <div class="row">
+                                    <v-btn 
+                                        justify='end' 
+                                        color="blue"
+                                        fab dark small
+                                        variant="tonal"
+                                        @click="show(v)"
+                                    >Detail &raquo;</v-btn>
+                                </div>
+                            </div>
+                        </div>
                       </div>
                   </div>
 
@@ -91,6 +91,8 @@
             if(this.indexPage != 1){
                 url = url+'&page='+this.indexPage
             }
+            
+            url = url+'&query=Approved'
 
             await this.$api.get(url, {
                 headers: {
@@ -98,6 +100,8 @@
                 },
             }).then(response => {
                 this.events = response.data.data.data
+
+                console.log(this.events);
                 this.toogleLoading()
             })
       },
@@ -119,7 +123,6 @@
           }
       },
     }
-    
   };
 </script>
 
